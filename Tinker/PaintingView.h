@@ -9,7 +9,7 @@
 
 #define kBrushOpacity		(1.0 / 3.0)
 #define kBrushPixelStep		3
-#define kBrushScale			2
+#define kBrushScale			1
 #define kLuminosity			0.75
 #define kSaturation			1.0
 
@@ -34,13 +34,21 @@
 	CGPoint	location;
 	CGPoint	previousLocation;
 	Boolean	firstTouch;
-	Boolean needsErase;	
+	Boolean needsErase;
+    
+    GLuint brushScale;
+    
 }
 
 @property(nonatomic, readwrite) CGPoint location;
 @property(nonatomic, readwrite) CGPoint previousLocation;
 
+@property(nonatomic, strong) NSMutableArray *recordingArray;
+
+
 - (void)erase;
+- (void)playRecordedData;
 - (void)setBrushColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue;
+- (void)setBrushSize:(NSInteger)num;
 
 @end

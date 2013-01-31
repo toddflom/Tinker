@@ -22,6 +22,7 @@
 
 @synthesize  location;
 @synthesize  previousLocation;
+@synthesize recordingArray;
 
 // Implement this to override the default layer class (which is [CALayer class]).
 // We do this so that our view will be backed by a layer that is capable of OpenGL ES rendering.
@@ -32,7 +33,7 @@
 
 // The GL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
 - (id)initWithCoder:(NSCoder*)coder {
-	
+    	
 	NSMutableArray*	recordedPaths;
 	CGImageRef		brushImage;
 	CGContextRef	brushContext;
@@ -40,6 +41,12 @@
 	size_t			width, height;
     
     if ((self = [super initWithCoder:coder])) {
+        
+        
+        recordingArray = [[NSMutableArray alloc]init];
+        
+        brushScale = 2;
+        
 		CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
 		
 		//eaglLayer.opaque = YES;
@@ -52,7 +59,7 @@
 		context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES1];
 		
 		if (!context || ![EAGLContext setCurrentContext:context]) {
-			[self release];
+		//	[self release];
 			return nil;
 		}
 		
@@ -111,15 +118,16 @@
 		
 		glEnable(GL_POINT_SPRITE_OES);
 		glTexEnvf(GL_POINT_SPRITE_OES, GL_COORD_REPLACE_OES, GL_TRUE);
-		glPointSize(width / kBrushScale);
+        //    glPointSize(width / kBrushScale);
+		glPointSize(width / brushScale);
 		
 		// Make sure to start with a cleared buffer
 		needsErase = YES;
 		
 		// Playback recorded path, which is "Shake Me"
-		recordedPaths = [NSMutableArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Recording" ofType:@"data"]];
-		if([recordedPaths count])
-			[self performSelector:@selector(playback:) withObject:recordedPaths afterDelay:0.2];
+	//	recordedPaths = [NSMutableArray arrayWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Recording" ofType:@"data"]];
+	//	if([recordedPaths count])
+	//		[self performSelector:@selector(playback:) withObject:recordedPaths afterDelay:0.2];
 	}
 	
 	return self;
@@ -201,8 +209,8 @@
 		[EAGLContext setCurrentContext:nil];
 	}
 	
-	[context release];
-	[super dealloc];
+	//[context release];
+	//[super dealloc];
 }
 
 // Erases the screen
@@ -265,6 +273,22 @@
 	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 
+
+- (void)playRecordedData {
+    
+    if(recordingArray != NULL){
+        
+        for(int l = 0; l < [recordingArray count]; l++){
+            //replays my writRay -1 because of location point
+            for(int p = 0; p < [[recordingArray objectAtIndex:l]count] -1; p ++){
+                [self renderLineFromPoint:[[[recordingArray objectAtIndex:l]objectAtIndex:p]CGPointValue] toPoint:[[[recordingArray objectAtIndex:l]objectAtIndex:p + 1]CGPointValue]];
+            }
+        }
+    }
+}
+
+
+
 // Reads previously recorded points and draws them onscreen. This is the Shake Me message that appears when the application launches.
 - (void) playback:(NSMutableArray*)recordedPaths
 {
@@ -307,12 +331,22 @@
 		firstTouch = NO;
 		previousLocation = [touch previousLocationInView:self];
 		previousLocation.y = bounds.size.height - previousLocation.y;
+        
+        /******************* create a new array for this stroke's points **************/
+        [recordingArray addObject:[[NSMutableArray alloc]init]];
+        /***** add 1st point *********/
+        [[recordingArray objectAtIndex:[recordingArray count] -1]addObject:[NSValue valueWithCGPoint:previousLocation]];
+
 	} else {
 		location = [touch locationInView:self];
 	    location.y = bounds.size.height - location.y;
 		previousLocation = [touch previousLocationInView:self];
 		previousLocation.y = bounds.size.height - previousLocation.y;
-	}
+        
+        /********* add additional points *********/
+        [[recordingArray objectAtIndex:[recordingArray count] -1]addObject:[NSValue valueWithCGPoint:previousLocation]];
+        
+    }
 		
 	// Render the stroke
 	[self renderLineFromPoint:previousLocation toPoint:location];
@@ -360,7 +394,7 @@
                                           delegate:self cancelButtonTitle:@"Ok"
                                  otherButtonTitles:nil];
     [alert show];
-    [alert release];
+   // [alert release];
 }
 
 
@@ -373,6 +407,31 @@
 			  blue	* kBrushOpacity,
 			  kBrushOpacity);
 }
+
+
+- (void)setBrushSize:(NSInteger)num {
+    switch (num) {
+        case 0:
+            brushScale = 4;
+            break;
+        case 1:
+            brushScale = 2;
+            break;
+        case 2:
+            brushScale = 1;
+            break;
+            
+        default:
+            break;
+    }
+    
+    CGImageRef brushImage2 = [UIImage imageNamed:@"Particle.png"].CGImage;
+    
+    // Get the width and height of the image
+    CGFloat width = CGImageGetWidth(brushImage2);
+    glPointSize(width / brushScale);
+}
+
 
 
 

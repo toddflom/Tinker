@@ -13,20 +13,14 @@
     // Instance variables:
     //   - Declare as usual.  The alloc/sharedIntance.
     NSString *someData;
-    
-    NSMutableArray *startingBrushColor;
 
-	PaintingView		*drawingView;
+	PaintingView        *drawingView;
     
-	CFTimeInterval		lastTime;
 
 }
 
 // Properties as usual
 @property (nonatomic, retain) NSString *someData;
-
-@property (nonatomic, retain) NSMutableArray *startingBrushColor;
-
 
 @property (nonatomic, retain) IBOutlet PaintingView *drawingView;
 
@@ -42,8 +36,8 @@
 +(NSString *) getSomeData;
 +(void) setSomeData:(NSString *)someData;
 
-+(NSMutableArray *) getStartingBrushColor;
 
+- (NSMutableArray *) getNewBrushColorWithHue:(NSInteger)senderID;
 // Instance Methods: Declare and implement as usual
 
 

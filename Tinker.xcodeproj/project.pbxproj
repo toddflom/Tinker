@@ -26,6 +26,11 @@
 		1A3BF33D16B9D36400BE7284 /* Purple.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF33716B9D36400BE7284 /* Purple.png */; };
 		1A3BF33E16B9D36400BE7284 /* Red.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF33816B9D36400BE7284 /* Red.png */; };
 		1A3BF33F16B9D36400BE7284 /* Yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF33916B9D36400BE7284 /* Yellow.png */; };
+		1A3BF34016BAC8B200BE7284 /* PaintingView.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3BF33216B9D0FC00BE7284 /* PaintingView.m */; };
+		1A3BF34416BAFBB200BE7284 /* brush_large.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF34116BAFBB100BE7284 /* brush_large.png */; };
+		1A3BF34516BAFBB200BE7284 /* brush_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF34216BAFBB100BE7284 /* brush_medium.png */; };
+		1A3BF34616BAFBB200BE7284 /* brush_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF34316BAFBB200BE7284 /* brush_small.png */; };
+		1A3BF34816BB17CB00BE7284 /* mickiWithArragement.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF34716BB17CB00BE7284 /* mickiWithArragement.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +62,10 @@
 		1A3BF33716B9D36400BE7284 /* Purple.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Purple.png; sourceTree = "<group>"; };
 		1A3BF33816B9D36400BE7284 /* Red.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Red.png; sourceTree = "<group>"; };
 		1A3BF33916B9D36400BE7284 /* Yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Yellow.png; sourceTree = "<group>"; };
+		1A3BF34116BAFBB100BE7284 /* brush_large.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brush_large.png; sourceTree = "<group>"; };
+		1A3BF34216BAFBB100BE7284 /* brush_medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brush_medium.png; sourceTree = "<group>"; };
+		1A3BF34316BAFBB200BE7284 /* brush_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brush_small.png; sourceTree = "<group>"; };
+		1A3BF34716BB17CB00BE7284 /* mickiWithArragement.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mickiWithArragement.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,6 +148,10 @@
 		1A3BF33316B9D34200BE7284 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1A3BF34716BB17CB00BE7284 /* mickiWithArragement.jpg */,
+				1A3BF34116BAFBB100BE7284 /* brush_large.png */,
+				1A3BF34216BAFBB100BE7284 /* brush_medium.png */,
+				1A3BF34316BAFBB200BE7284 /* brush_small.png */,
 				1A3BF33416B9D36400BE7284 /* Particle.png */,
 				1A3BF33516B9D36400BE7284 /* Blue.png */,
 				1A3BF33616B9D36400BE7284 /* Green.png */,
@@ -210,6 +223,10 @@
 				1A3BF33D16B9D36400BE7284 /* Purple.png in Resources */,
 				1A3BF33E16B9D36400BE7284 /* Red.png in Resources */,
 				1A3BF33F16B9D36400BE7284 /* Yellow.png in Resources */,
+				1A3BF34416BAFBB200BE7284 /* brush_large.png in Resources */,
+				1A3BF34516BAFBB200BE7284 /* brush_medium.png in Resources */,
+				1A3BF34616BAFBB200BE7284 /* brush_small.png in Resources */,
+				1A3BF34816BB17CB00BE7284 /* mickiWithArragement.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +241,7 @@
 				1A3BF31816B9C11D00BE7284 /* AppDelegate.m in Sources */,
 				1A3BF32416B9C11D00BE7284 /* ViewController.m in Sources */,
 				1A3BF32C16B9CD9500BE7284 /* EaglLayerController.m in Sources */,
+				1A3BF34016BAC8B200BE7284 /* PaintingView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +364,7 @@
 				1A3BF32916B9C11D00BE7284 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

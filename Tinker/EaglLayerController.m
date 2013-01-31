@@ -12,22 +12,11 @@
 
 //CONSTANTS:
 
-#define kPaletteHeight			30
 #define kPaletteSize			5
-#define kMinEraseInterval		0.5
-
-// Padding for margins
-#define kLeftMargin				10.0
-#define kTopMargin				10.0
-#define kRightMargin			10.0
-
 
 
 //CONSTANTS:
 
-#define kBrushOpacity		(1.0 / 3.0)
-#define kBrushPixelStep		3
-#define kBrushScale			2
 #define kLuminosity			0.75
 #define kSaturation			1.0
 
@@ -143,12 +132,17 @@ static EaglLayerController *sharedObject;
 
 
 
-+(NSMutableArray *) getStartingBrushColor {
-    // Ensure we are using the shared instance
-   
+// Change the brush color
+- (NSMutableArray *) getNewBrushColorWithHue:(NSInteger)senderID {
+    
+    
+    
+    NSLog(@"Red: %f, Blue: %f, Green: %f", (CGFloat)senderID, kSaturation, kLuminosity);
+
+    
     CGFloat	components[3];
     // Define a starting color
-	HSL2RGB((CGFloat) 2.0 / (CGFloat)kPaletteSize, kSaturation, kLuminosity, &components[0], &components[1], &components[2]);
+	HSL2RGB((CGFloat)senderID / (CGFloat)kPaletteSize , kSaturation, kLuminosity, &components[0], &components[1], &components[2]);
     
     NSMutableArray *arrayPoints = [[NSMutableArray alloc]init];
     [arrayPoints addObject:[NSNumber numberWithFloat:components[0]]];
@@ -156,52 +150,9 @@ static EaglLayerController *sharedObject;
     [arrayPoints addObject:[NSNumber numberWithFloat:components[2]]];
     
     return arrayPoints;
-}
-
-
-/*
-
-- (void) applicationDidFinishLaunching:(UIApplication*)application
-{
-	CGFloat					components[3];
-		
-    // Define a starting color
-	HSL2RGB((CGFloat) 2.0 / (CGFloat)kPaletteSize, kSaturation, kLuminosity, &components[0], &components[1], &components[2]);
-	// Defer to the OpenGL view to set the brush color
-	[drawingView setBrushColorWithRed:components[0] green:components[1] blue:components[2]];
-	    
-	// Erase the view when recieving a notification named "shake" from the NSNotificationCenter object
-	// The "shake" nofification is posted by the PaintingWindow object when user shakes the device
-	// [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(eraseView) name:@"shake" object:nil];
-}
-
-
-// Change the brush color
-- (void)changeBrushColor:(id)sender
-{
- 	CGFloat					components[3];
-    
-	// Play sound
-    // 	[selectSound play];
-	
-	// Define a new brush color
- 	HSL2RGB((CGFloat)[sender selectedSegmentIndex] / (CGFloat)kPaletteSize, kSaturation, kLuminosity, &components[0], &components[1], &components[2]);
-	// Defer to the OpenGL view to set the brush color
-	[drawingView setBrushColorWithRed:components[0] green:components[1] blue:components[2]];
     
 }
 
-// Called when receiving the "shake" notification; plays the erase sound and redraws the view
--(void) eraseView
-{
-	if(CFAbsoluteTimeGetCurrent() > lastTime + kMinEraseInterval) {
-        //		[erasingSound play];
-		[drawingView erase];
-		lastTime = CFAbsoluteTimeGetCurrent();
-	}
-}
-
-*/
 
 
 @end
