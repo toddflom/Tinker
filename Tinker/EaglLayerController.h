@@ -14,6 +14,7 @@
     //   - Declare as usual.  The alloc/sharedIntance.
     NSString *someData;
     
+    NSMutableArray *startingBrushColor;
 
 	PaintingView		*drawingView;
     
@@ -23,6 +24,9 @@
 
 // Properties as usual
 @property (nonatomic, retain) NSString *someData;
+
+@property (nonatomic, retain) NSMutableArray *startingBrushColor;
+
 
 @property (nonatomic, retain) IBOutlet PaintingView *drawingView;
 
@@ -38,6 +42,7 @@
 +(NSString *) getSomeData;
 +(void) setSomeData:(NSString *)someData;
 
++(NSMutableArray *) getStartingBrushColor;
 
 // Instance Methods: Declare and implement as usual
 

@@ -113,8 +113,12 @@ static void HSL2RGB(float h, float s, float l, float* outR, float* outG, float* 
 
 @synthesize someData;
 
+
+
 #pragma mark Singleton Implementation
+
 static EaglLayerController *sharedObject;
+
 + (EaglLayerController*)sharedInstance
 {
     if (sharedObject == nil) {
@@ -139,18 +143,23 @@ static EaglLayerController *sharedObject;
 
 
 
-+(CGFloat [3]) getStartingBrushColor {
++(NSMutableArray *) getStartingBrushColor {
     // Ensure we are using the shared instance
    
     CGFloat	components[3];
     // Define a starting color
 	HSL2RGB((CGFloat) 2.0 / (CGFloat)kPaletteSize, kSaturation, kLuminosity, &components[0], &components[1], &components[2]);
     
-    return components;
+    NSMutableArray *arrayPoints = [[NSMutableArray alloc]init];
+    [arrayPoints addObject:[NSNumber numberWithFloat:components[0]]];
+    [arrayPoints addObject:[NSNumber numberWithFloat:components[1]]];
+    [arrayPoints addObject:[NSNumber numberWithFloat:components[2]]];
+    
+    return arrayPoints;
 }
 
 
-
+/*
 
 - (void) applicationDidFinishLaunching:(UIApplication*)application
 {
@@ -192,7 +201,7 @@ static EaglLayerController *sharedObject;
 	}
 }
 
-
+*/
 
 
 @end

@@ -7,6 +7,8 @@
 //
 
 #import "ViewController.h"
+#import "PaintingView.h"
+#import "EaglLayerController.h"
 
 
 //CONSTANTS:
@@ -23,9 +25,12 @@
 
 @interface ViewController ()
 
+@property (weak, nonatomic) IBOutlet PaintingView *maskPaintingView;
+
 @end
 
 @implementation ViewController
+@synthesize maskPaintingView;
 
 - (void)viewDidLoad
 {
@@ -59,7 +64,11 @@
 	// Add the control to the window
 	[self.view addSubview:segmentedControl];
 
+    EaglLayerController *shared = [EaglLayerController sharedInstance]; 
     
+    NSMutableArray *colors = shared.startingBrushColor;
+        
+    [maskPaintingView setBrushColorWithRed:[colors objectAtIndex:0] green:[colors objectAtIndex:1] blue:[colors objectAtIndex:2]];
     
 }
 
@@ -69,4 +78,8 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewDidUnload {
+    [self setMaskPaintingView:nil];
+    [super viewDidUnload];
+}
 @end
