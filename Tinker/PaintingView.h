@@ -43,12 +43,13 @@
 @property(nonatomic, readwrite) CGPoint location;
 @property(nonatomic, readwrite) CGPoint previousLocation;
 
-@property(nonatomic, strong) NSMutableArray *recordingArray;
+//@property(nonatomic, strong) NSMutableArray *recordingArray;
 
 
 - (void)erase;
-- (void)playRecordedData;
+//- (void)playRecordedData;
 - (void)setBrushColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue;
 - (void)setBrushSize:(NSInteger)num;
+- (void) getMaskFromDrawing;
 
 @end

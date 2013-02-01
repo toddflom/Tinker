@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Carmichael Lynch. All rights reserved.
 //
 
-#import "ViewController.h"
+#import "MaskViewController.h"
 #import "PaintingView.h"
 #import "EaglLayerController.h"
 
@@ -25,7 +25,7 @@
 
 
 
-@interface ViewController () {
+@interface MaskViewController () {
     EaglLayerController *shared;
     CFTimeInterval		lastTime;
 
@@ -34,16 +34,18 @@
 @property (weak, nonatomic) IBOutlet UIButton *eraseButton;
 @property (weak, nonatomic) IBOutlet UIButton *redrawButton;
 @property (weak, nonatomic) IBOutlet UISwitch *eraseSwitch;
+@property (weak, nonatomic) IBOutlet UIButton *getMaskButton;
 
 @property (strong, nonatomic) IBOutlet PaintingView *maskPaintingView;
 
 - (IBAction)eraseBoard:(id)sender;
 - (IBAction)redraw:(id)sender;
 - (IBAction)eraseSwitchToggle:(id)sender;
+- (IBAction)saveImageToAlbum:(id)sender;
 
 @end
 
-@implementation ViewController
+@implementation MaskViewController
 @synthesize maskPaintingView;
 
 - (void)viewDidLoad
@@ -150,6 +152,7 @@
     [self setEraseButton:nil];
     [self setRedrawButton:nil];
     [self setEraseSwitch:nil];
+    [self setGetMaskButton:nil];
     [super viewDidUnload];
 }
 
@@ -162,7 +165,7 @@
 }
 
 - (IBAction)redraw:(id)sender {
-    [maskPaintingView playRecordedData];
+//    [maskPaintingView playRecordedData];
 }
 
 - (IBAction)eraseSwitchToggle:(UISwitch *)sender {
@@ -173,6 +176,11 @@
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
     }
         
+}
+
+- (IBAction)saveImageToAlbum:(id)sender {
+    
+    [maskPaintingView getMaskFromDrawing];
 }
 
 

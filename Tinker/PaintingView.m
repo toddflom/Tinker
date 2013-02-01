@@ -5,6 +5,11 @@
 
 #import "PaintingView.h"
 
+
+
+#define ROUND_UP(N, S) ((((N) + (S) - 1) / (S)) * (S))
+
+
 //CLASS IMPLEMENTATIONS:
 
 // A class extension to declare private methods
@@ -22,7 +27,7 @@
 
 @synthesize  location;
 @synthesize  previousLocation;
-@synthesize recordingArray;
+//@synthesize recordingArray;
 
 // Implement this to override the default layer class (which is [CALayer class]).
 // We do this so that our view will be backed by a layer that is capable of OpenGL ES rendering.
@@ -34,7 +39,7 @@
 // The GL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
 - (id)initWithCoder:(NSCoder*)coder {
     	
-	NSMutableArray*	recordedPaths;
+//	NSMutableArray*	recordedPaths;
 	CGImageRef		brushImage;
 	CGContextRef	brushContext;
 	GLubyte			*brushData;
@@ -42,8 +47,9 @@
     
     if ((self = [super initWithCoder:coder])) {
         
+        self.alpha = 0.5f;
         
-        recordingArray = [[NSMutableArray alloc]init];
+//        recordingArray = [[NSMutableArray alloc]init];
         
         brushScale = 2;
         
@@ -274,6 +280,7 @@
 }
 
 
+/*
 - (void)playRecordedData {
     
     if(recordingArray != NULL){
@@ -286,9 +293,10 @@
         }
     }
 }
+ */
 
 
-
+/*
 // Reads previously recorded points and draws them onscreen. This is the Shake Me message that appears when the application launches.
 - (void) playback:(NSMutableArray*)recordedPaths
 {
@@ -306,6 +314,7 @@
 	if([recordedPaths count])
 		[self performSelector:@selector(playback:) withObject:recordedPaths afterDelay:0.01];
 }
+*/
 
 
 // Handles the start of a touch
@@ -332,10 +341,10 @@
 		previousLocation = [touch previousLocationInView:self];
 		previousLocation.y = bounds.size.height - previousLocation.y;
         
-        /******************* create a new array for this stroke's points **************/
-        [recordingArray addObject:[[NSMutableArray alloc]init]];
-        /***** add 1st point *********/
-        [[recordingArray objectAtIndex:[recordingArray count] -1]addObject:[NSValue valueWithCGPoint:previousLocation]];
+//        /******************* create a new array for this stroke's points **************/
+//        [recordingArray addObject:[[NSMutableArray alloc]init]];
+//        /***** add 1st point *********/
+//        [[recordingArray objectAtIndex:[recordingArray count] -1]addObject:[NSValue valueWithCGPoint:previousLocation]];
 
 	} else {
 		location = [touch locationInView:self];
@@ -343,8 +352,8 @@
 		previousLocation = [touch previousLocationInView:self];
 		previousLocation.y = bounds.size.height - previousLocation.y;
         
-        /********* add additional points *********/
-        [[recordingArray objectAtIndex:[recordingArray count] -1]addObject:[NSValue valueWithCGPoint:previousLocation]];
+//        /********* add additional points *********/
+//        [[recordingArray objectAtIndex:[recordingArray count] -1]addObject:[NSValue valueWithCGPoint:previousLocation]];
         
     }
 		
@@ -364,10 +373,6 @@
 		[self renderLineFromPoint:previousLocation toPoint:location];
 	}
     
-    UIImage *image = [self drawableToCGImage];
-    
- //   UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
-
 }
 
 // Handles the end of a touch event.
@@ -378,6 +383,84 @@
     
     
 }
+
+
+
+- (void) getMaskFromDrawing {
+    
+  // UIImage *image = [self drawableToCGImage];
+    
+     UIImage *imageOrig = [self glToUIImage];
+    
+    UIImage *image = [self seperatAlphaFromImage:imageOrig];
+    
+    
+  // UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+    
+    
+    NSString *imageName = @"OpenGLImage.png";
+    NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,  NSUserDomainMask, YES);
+    NSString * documentsDirectoryPath = [paths objectAtIndex:0];
+    
+    NSString *dataPath = [documentsDirectoryPath  stringByAppendingPathComponent:imageName];
+    
+    NSLog(@"%@", dataPath);
+
+    
+    NSData* settingsData = UIImagePNGRepresentation(image);
+    
+    [settingsData writeToFile:dataPath atomically:YES];
+
+}
+
+
+
+
+- (UIImage *) glToUIImage {
+    NSInteger myDataLength = 320 * 480 * 4;
+	
+    // allocate array and read pixels into it.
+    GLubyte *buffer = (GLubyte *) malloc(myDataLength);
+    glReadPixels(0, 0, 320, 480, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+	
+    // gl renders \"upside down\" so swap top to bottom into new array.
+    // there's gotta be a better way, but this works.
+    GLubyte *buffer2 = (GLubyte *) malloc(myDataLength);
+    for(int y = 0; y <480; y++)
+    {
+        for(int x = 0; x <320 * 4; x++)
+        {
+            buffer2[(479 - y) * 320 * 4 + x] = buffer[y * 4 * 320 + x];
+        }
+    }
+	
+    // make data provider with data.
+    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer2, myDataLength, NULL);
+	
+    // prep the ingredients
+    int bitsPerComponent = 8;
+    int bitsPerPixel = 32;
+    int bytesPerRow = 4 * 320;
+    CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
+	
+    //xxxxxx This is the line of code that I found in multiple solutions throughout the web but doesn't deal with the transparency
+    // CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
+    //xxxxxx
+    
+    //*******This is the code I used to handle the tranparency!!!
+    CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedLast;
+    //*******
+    
+    CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
+	
+    // make the cgimage
+    CGImageRef imageRef = CGImageCreate(320, 480, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, NULL, NO, renderingIntent);
+	
+    // then make the uiimage from that
+    UIImage *myImage = [UIImage imageWithCGImage:imageRef];
+    return myImage;
+}
+
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
@@ -431,7 +514,6 @@
     CGFloat width = CGImageGetWidth(brushImage2);
     glPointSize(width / brushScale);
 }
-
 
 
 
@@ -494,6 +576,19 @@
     // Retrieve the UIImage from the current context
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     
+    
+    
+ //   CGImageRef finalMaskImage = [self createMaskWithImageAlpha:cgcontext];
+
+ //   UIImage *maskImage = [UIImage imageWithCGImage:finalMaskImage];
+ //   [self imageDump:finalMaskImage];
+
+    
+    UIImage *maskImage = [self seperatAlphaFromImage:image];
+    
+    
+    
+    
     UIGraphicsEndImageContext();
     
     // Clean up
@@ -502,11 +597,128 @@
     CFRelease(colorspace);
     CGImageRelease(iref);
     
+    
+ //   CGImageRelease(finalMaskImage);
+
+    
+    
   //  UIImage *flippedImg = [self flipImageVertically:image];
     
-    return image;
-    
+//    return image;
+    return maskImage;
 }
+
+
+
+
+- (UIImage*)seperatAlphaFromImage:(UIImage*)pngImage
+{
+    CGRect imageRect = CGRectMake(0, 0, pngImage.size.width, pngImage.size.height);
+    
+    //Pixel Buffer
+    uint32_t* piPixels = (uint32_t*)malloc(imageRect.size.width * imageRect.size.height * sizeof(uint32_t));
+    if (piPixels == NULL)
+    {
+        return nil;
+    }
+    memset(piPixels, 0, imageRect.size.width * imageRect.size.height * sizeof(uint32_t));
+    
+    //Drawing image in the buffer
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef context2 = CGBitmapContextCreate(piPixels, imageRect.size.width, imageRect.size.height, 8, sizeof(uint32_t) * imageRect.size.width, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedLast);
+    
+    
+    CGContextSetFillColorWithColor(context2, [[UIColor blackColor] CGColor]);
+    CGContextFillRect(context2, imageRect );
+    
+    
+    CGContextDrawImage(context2, imageRect, pngImage.CGImage);
+    
+    //Copying the alpha values to the red values of the image and setting the alpha to 1
+    for (uint32_t y = 0; y < imageRect.size.height; y++)
+    {
+        for (uint32_t x = 0; x < imageRect.size.width; x++)
+        {
+            uint8_t* rgbaValues = (uint8_t*)&piPixels[y * (uint32_t)imageRect.size.width + x];
+            
+            //alpha = 0, red = 1, green = 2, blue = 3.
+            
+            rgbaValues[0] = rgbaValues[0];
+            rgbaValues[1] = rgbaValues[3];
+            rgbaValues[2] = rgbaValues[3];
+            rgbaValues[3] = rgbaValues[3];
+        }
+    }
+    
+    //Creating image whose red values will preserve the alpha values
+    CGImageRef newCGImage = CGBitmapContextCreateImage(context2);
+    UIImage* newImage = [[UIImage alloc] initWithCGImage:newCGImage];
+    CGImageRelease(newCGImage);
+    
+    return newImage;    
+}
+
+
+
+
+
+
+- (CGImageRef) createMaskWithImageAlpha: (CGContextRef) originalImageContext {
+    
+    UInt8 *data = (UInt8 *)CGBitmapContextGetData(originalImageContext);
+    
+    float width = CGBitmapContextGetBytesPerRow(originalImageContext) / 4;
+    float height = CGBitmapContextGetHeight(originalImageContext);
+    
+    // Make a bitmap context that's only 1 alpha channel
+    // WARNING: the bytes per row probably needs to be a multiple of 4
+    int strideLength = ROUND_UP(width * 1, 4);
+    unsigned char * alphaData = (unsigned char * )calloc(strideLength * height, 1);
+    CGContextRef alphaOnlyContext = CGBitmapContextCreate(alphaData,
+                                                          width,
+                                                          height,
+                                                          8,
+                                                          strideLength,
+                                                          NULL,
+                                                          kCGImageAlphaOnly);
+    
+    // Draw the RGBA image into the alpha-only context.
+    //CGContextDrawImage(alphaOnlyContext, CGRectMake(0, 0, width, height), originalMaskImage);
+    
+    // Walk the pixels and invert the alpha value. This lets you colorize the opaque shapes in the original image.
+    // If you want to do a traditional mask (where the opaque values block) just get rid of these loops.
+    
+    
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            //unsigned char val = alphaData[y*strideLength + x];
+            unsigned char val = data[y*(int)width*4 + x*4 + 3];
+            val = 255 - val;
+            alphaData[y*strideLength + x] = val;
+        }
+    }
+    
+    
+    CGImageRef alphaMaskImage = CGBitmapContextCreateImage(alphaOnlyContext);
+    CGContextRelease(alphaOnlyContext);
+    free(alphaData);
+    
+    // Make a mask
+    CGImageRef finalMaskImage = CGImageMaskCreate(CGImageGetWidth(alphaMaskImage),
+                                                  CGImageGetHeight(alphaMaskImage),
+                                                  CGImageGetBitsPerComponent(alphaMaskImage),
+                                                  CGImageGetBitsPerPixel(alphaMaskImage),
+                                                  CGImageGetBytesPerRow(alphaMaskImage),
+                                                  CGImageGetDataProvider(alphaMaskImage),     NULL, false);
+    CGImageRelease(alphaMaskImage);
+    
+    return finalMaskImage;
+}
+
+
+
+
+
 
 
 @end

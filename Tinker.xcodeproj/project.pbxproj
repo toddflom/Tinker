@@ -16,7 +16,7 @@
 		1A3BF31A16B9C11D00BE7284 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF31916B9C11D00BE7284 /* Default.png */; };
 		1A3BF31C16B9C11D00BE7284 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF31B16B9C11D00BE7284 /* Default@2x.png */; };
 		1A3BF32116B9C11D00BE7284 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF31F16B9C11D00BE7284 /* MainStoryboard.storyboard */; };
-		1A3BF32416B9C11D00BE7284 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3BF32316B9C11D00BE7284 /* ViewController.m */; };
+		1A3BF32416B9C11D00BE7284 /* MaskViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3BF32316B9C11D00BE7284 /* MaskViewController.m */; };
 		1A3BF32C16B9CD9500BE7284 /* EaglLayerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3BF32B16B9CD9500BE7284 /* EaglLayerController.m */; };
 		1A3BF32E16B9D08B00BE7284 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3BF32D16B9D08B00BE7284 /* QuartzCore.framework */; };
 		1A3BF33016B9D0A700BE7284 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3BF32F16B9D0A700BE7284 /* OpenGLES.framework */; };
@@ -31,6 +31,8 @@
 		1A3BF34516BAFBB200BE7284 /* brush_medium.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF34216BAFBB100BE7284 /* brush_medium.png */; };
 		1A3BF34616BAFBB200BE7284 /* brush_small.png in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF34316BAFBB200BE7284 /* brush_small.png */; };
 		1A3BF34816BB17CB00BE7284 /* mickiWithArragement.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF34716BB17CB00BE7284 /* mickiWithArragement.jpg */; };
+		1A3BF34A16BC496600BE7284 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3BF34916BC496600BE7284 /* MobileCoreServices.framework */; };
+		1A3BF35016BC6D6200BE7284 /* ImagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3BF34F16BC6D6200BE7284 /* ImagePickerViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,8 +50,8 @@
 		1A3BF31B16B9C11D00BE7284 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		1A3BF31D16B9C11D00BE7284 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		1A3BF32016B9C11D00BE7284 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
-		1A3BF32216B9C11D00BE7284 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		1A3BF32316B9C11D00BE7284 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		1A3BF32216B9C11D00BE7284 /* MaskViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MaskViewController.h; sourceTree = "<group>"; };
+		1A3BF32316B9C11D00BE7284 /* MaskViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MaskViewController.m; sourceTree = "<group>"; };
 		1A3BF32A16B9CD9500BE7284 /* EaglLayerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EaglLayerController.h; sourceTree = "<group>"; };
 		1A3BF32B16B9CD9500BE7284 /* EaglLayerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EaglLayerController.m; sourceTree = "<group>"; };
 		1A3BF32D16B9D08B00BE7284 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -66,6 +68,9 @@
 		1A3BF34216BAFBB100BE7284 /* brush_medium.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brush_medium.png; sourceTree = "<group>"; };
 		1A3BF34316BAFBB200BE7284 /* brush_small.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = brush_small.png; sourceTree = "<group>"; };
 		1A3BF34716BB17CB00BE7284 /* mickiWithArragement.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mickiWithArragement.jpg; sourceTree = "<group>"; };
+		1A3BF34916BC496600BE7284 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		1A3BF34E16BC6D6200BE7284 /* ImagePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePickerViewController.h; sourceTree = "<group>"; };
+		1A3BF34F16BC6D6200BE7284 /* ImagePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePickerViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1A3BF34A16BC496600BE7284 /* MobileCoreServices.framework in Frameworks */,
 				1A3BF33016B9D0A700BE7284 /* OpenGLES.framework in Frameworks */,
 				1A3BF32E16B9D08B00BE7284 /* QuartzCore.framework in Frameworks */,
 				1A3BF30816B9C11D00BE7284 /* UIKit.framework in Frameworks */,
@@ -104,6 +110,7 @@
 		1A3BF30616B9C11D00BE7284 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1A3BF34916BC496600BE7284 /* MobileCoreServices.framework */,
 				1A3BF32F16B9D0A700BE7284 /* OpenGLES.framework */,
 				1A3BF32D16B9D08B00BE7284 /* QuartzCore.framework */,
 				1A3BF30716B9C11D00BE7284 /* UIKit.framework */,
@@ -120,13 +127,15 @@
 				1A3BF31616B9C11D00BE7284 /* AppDelegate.h */,
 				1A3BF31716B9C11D00BE7284 /* AppDelegate.m */,
 				1A3BF31F16B9C11D00BE7284 /* MainStoryboard.storyboard */,
-				1A3BF32216B9C11D00BE7284 /* ViewController.h */,
-				1A3BF32316B9C11D00BE7284 /* ViewController.m */,
+				1A3BF32216B9C11D00BE7284 /* MaskViewController.h */,
+				1A3BF32316B9C11D00BE7284 /* MaskViewController.m */,
 				1A3BF30E16B9C11D00BE7284 /* Supporting Files */,
 				1A3BF32A16B9CD9500BE7284 /* EaglLayerController.h */,
 				1A3BF32B16B9CD9500BE7284 /* EaglLayerController.m */,
 				1A3BF33116B9D0FC00BE7284 /* PaintingView.h */,
 				1A3BF33216B9D0FC00BE7284 /* PaintingView.m */,
+				1A3BF34E16BC6D6200BE7284 /* ImagePickerViewController.h */,
+				1A3BF34F16BC6D6200BE7284 /* ImagePickerViewController.m */,
 			);
 			path = Tinker;
 			sourceTree = "<group>";
@@ -239,9 +248,10 @@
 			files = (
 				1A3BF31416B9C11D00BE7284 /* main.m in Sources */,
 				1A3BF31816B9C11D00BE7284 /* AppDelegate.m in Sources */,
-				1A3BF32416B9C11D00BE7284 /* ViewController.m in Sources */,
+				1A3BF32416B9C11D00BE7284 /* MaskViewController.m in Sources */,
 				1A3BF32C16B9CD9500BE7284 /* EaglLayerController.m in Sources */,
 				1A3BF34016BAC8B200BE7284 /* PaintingView.m in Sources */,
+				1A3BF35016BC6D6200BE7284 /* ImagePickerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
