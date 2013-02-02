@@ -21,6 +21,7 @@
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo;
 - (UIImage *) drawableToCGImage;
 
+CGImageRef createMaskWithImage(CGImageRef image);
 @end
 
 @implementation PaintingView
@@ -386,30 +387,20 @@
 
 
 
-- (void) getMaskFromDrawing {
+- (UIImage *) getMaskFromDrawing:(CGSize)siz {
     
   // UIImage *image = [self drawableToCGImage];
     
-     UIImage *imageOrig = [self glToUIImage];
+    UIImage *imageOrig = [self glToUIImage];
     
-    UIImage *image = [self seperatAlphaFromImage:imageOrig];
+  //  UIImage *image = [self seperatAlphaFromImage:imageOrig withSize:siz];
     
+    UIImage *image = [UIImage imageWithCGImage:createMaskWithImage(imageOrig.CGImage)];
     
   // UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
     
-    
-    NSString *imageName = @"OpenGLImage.png";
-    NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,  NSUserDomainMask, YES);
-    NSString * documentsDirectoryPath = [paths objectAtIndex:0];
-    
-    NSString *dataPath = [documentsDirectoryPath  stringByAppendingPathComponent:imageName];
-    
-    NSLog(@"%@", dataPath);
+    return image;
 
-    
-    NSData* settingsData = UIImagePNGRepresentation(image);
-    
-    [settingsData writeToFile:dataPath atomically:YES];
 
 }
 
@@ -516,7 +507,8 @@
 }
 
 
-
+// UNUSED
+/*
 -(UIImage *) drawableToCGImage 
 {
     GLint backingWidth2, backingHeight2;
@@ -606,15 +598,54 @@
     
 //    return image;
     return maskImage;
+
+    
+}
+*/
+
+
+
+CGImageRef createMaskWithImage(CGImageRef image)
+{
+    int maskWidth               = CGImageGetWidth(image);
+    int maskHeight              = CGImageGetHeight(image);
+    //  round bytesPerRow to the nearest 16 bytes, for performance's sake
+    int bytesPerRow             = (maskWidth + 15) & 0xfffffff0;
+    int bufferSize              = bytesPerRow * maskHeight;
+    
+    //  allocate memory for the bits
+    CFMutableDataRef dataBuffer = CFDataCreateMutable(kCFAllocatorDefault, 0);
+    CFDataSetLength(dataBuffer, bufferSize);
+    
+    //  the data will be 8 bits per pixel, no alpha
+    CGColorSpaceRef colourSpace = CGColorSpaceCreateDeviceGray();
+    CGContextRef ctx            = CGBitmapContextCreate(CFDataGetMutableBytePtr(dataBuffer),
+                                                        maskWidth, maskHeight,
+                                                        8, bytesPerRow, colourSpace, kCGImageAlphaOnly);  // this is what did it
+    //  drawing into this context will draw into the dataBuffer.
+    CGContextDrawImage(ctx, CGRectMake(0, 0, maskWidth, maskHeight), image);
+    CGContextRelease(ctx);
+    
+    //  now make a mask from the data.
+    CGDataProviderRef dataProvider  = CGDataProviderCreateWithCFData(dataBuffer);
+    CGImageRef mask                 = CGImageMaskCreate(maskWidth, maskHeight, 8, 8, bytesPerRow,
+                                                        dataProvider, NULL, FALSE);
+    
+    CGDataProviderRelease(dataProvider);
+    CGColorSpaceRelease(colourSpace);
+    CFRelease(dataBuffer);
+    
+    return mask;
 }
 
 
-
-
-- (UIImage*)seperatAlphaFromImage:(UIImage*)pngImage
+// UNUSED
+/*
+- (UIImage*)seperatAlphaFromImage:(UIImage*)pngImage withSize:(CGSize) siz
 {
-    CGRect imageRect = CGRectMake(0, 0, pngImage.size.width, pngImage.size.height);
-    
+   // CGRect imageRect = CGRectMake(0, 0, pngImage.size.width, pngImage.size.height);
+    CGRect imageRect = CGRectMake(0, 0, siz.width, siz.height);  // scale it up to the size of the original image to mask
+   
     //Pixel Buffer
     uint32_t* piPixels = (uint32_t*)malloc(imageRect.size.width * imageRect.size.height * sizeof(uint32_t));
     if (piPixels == NULL)
@@ -628,8 +659,8 @@
     CGContextRef context2 = CGBitmapContextCreate(piPixels, imageRect.size.width, imageRect.size.height, 8, sizeof(uint32_t) * imageRect.size.width, colorSpace, kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedLast);
     
     
-    CGContextSetFillColorWithColor(context2, [[UIColor blackColor] CGColor]);
-    CGContextFillRect(context2, imageRect );
+ //   CGContextSetFillColorWithColor(context2, [[UIColor blackColor] CGColor]);
+ //   CGContextFillRect(context2, imageRect );
     
     
     CGContextDrawImage(context2, imageRect, pngImage.CGImage);
@@ -643,10 +674,10 @@
             
             //alpha = 0, red = 1, green = 2, blue = 3.
             
-            rgbaValues[0] = rgbaValues[0];
-            rgbaValues[1] = rgbaValues[3];
-            rgbaValues[2] = rgbaValues[3];
-            rgbaValues[3] = rgbaValues[3];
+            rgbaValues[0] = rgbaValues[0];  // 0 or 3 creates an alpha
+            rgbaValues[1] = rgbaValues[0]; // nothing works here
+            rgbaValues[2] = rgbaValues[0];  // nothing works here
+            rgbaValues[3] = rgbaValues[0]; // nothing works here
         }
     }
     
@@ -659,7 +690,7 @@
 }
 
 
-
+*/
 
 
 

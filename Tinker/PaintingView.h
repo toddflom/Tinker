@@ -50,6 +50,6 @@
 //- (void)playRecordedData;
 - (void)setBrushColorWithRed:(CGFloat)red green:(CGFloat)green blue:(CGFloat)blue;
 - (void)setBrushSize:(NSInteger)num;
-- (void) getMaskFromDrawing;
+- (UIImage *) getMaskFromDrawing:(CGSize)siz;
 
 @end

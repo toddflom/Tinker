@@ -7,6 +7,7 @@
 //
 
 #import "ImagePickerViewController.h"
+#import "imageFileWriter.h"
 
 @interface ImagePickerViewController () {
     BOOL newMedia;
@@ -17,9 +18,26 @@
 - (IBAction)useCamera:(id)sender;
 - (IBAction)useCameraRoll:(id)sender;
 
+- (IBAction)cancel:(id)sender;
+- (IBAction)UseImage:(id)sender;
+
+
+
+
+@property (weak, nonatomic) IBOutlet UIButton *cameraButton;
+@property (weak, nonatomic) IBOutlet UIButton *cameraRollButton;
+
+
+@property (weak, nonatomic) IBOutlet UIButton *cancelButton;
+@property (weak, nonatomic) IBOutlet UIButton *useImageButton;
+
 @end
 
 @implementation ImagePickerViewController
+@synthesize cameraButton;
+@synthesize cameraRollButton;
+@synthesize cancelButton;
+@synthesize useImageButton;
 
 @synthesize imageView;
 
@@ -46,6 +64,10 @@
 
 - (void)viewDidUnload {
     [self setImageView:nil];
+    [self setCancelButton:nil];
+    [self setUseImageButton:nil];
+    [self setCameraButton:nil];
+    [self setCameraRollButton:nil];
     [super viewDidUnload];
 }
 
@@ -86,6 +108,29 @@
     }
 }
 
+- (IBAction)cancel:(id)sender {
+    imageView.image = nil;
+    [self switchControls];
+}
+
+- (IBAction)UseImage:(id)sender {
+
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard"
+                                                             bundle: nil];
+    
+    UIViewController *controller = (UIViewController*)[mainStoryboard
+                                                       instantiateViewControllerWithIdentifier: @"MaskView"];
+    
+//    controller.controlFlag = YES;
+//    controller.controlFlag2 = NO; // Just examples
+    
+    //These flags will be set before the viewDidLoad of MenuScreenViewController
+    //Therefore any code you write before pushing or presenting the view will be present after
+    
+   [self.navigationController pushViewController:controller animated:YES];
+   // [self presentViewController:controller animated:YES];
+}
+
 
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -93,16 +138,27 @@
     UIImage *pickedImage = [info objectForKey:UIImagePickerControllerOriginalImage];
     imageView.image = pickedImage;
     
+    [self switchControls];
+    
     if (newMedia) {
         UIImageWriteToSavedPhotosAlbum(pickedImage, self,
                                        @selector(image:finishedSavingWithError:contextInfo:),
                                        nil);
     }
+    
+    [ImageFileWriter setSavedImage: pickedImage];
 
 }
 
 
+- (void) switchControls {
+    
+    [cameraButton setHidden:!cameraButton.hidden];
+    [cameraRollButton setHidden:!cameraRollButton.hidden];
+    [cancelButton setHidden:!cancelButton.hidden];
+    [useImageButton setHidden:!useImageButton.hidden];
 
+}
 
 
 -(void)image:(UIImage *)image finishedSavingWithError:(NSError *)error contextInfo:(void *)contextInfo

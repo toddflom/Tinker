@@ -9,6 +9,7 @@
 #import "MaskViewController.h"
 #import "PaintingView.h"
 #import "EaglLayerController.h"
+#import "imageFileWriter.h"
 
 
 //CONSTANTS:
@@ -35,6 +36,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *redrawButton;
 @property (weak, nonatomic) IBOutlet UISwitch *eraseSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *getMaskButton;
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+
 
 @property (strong, nonatomic) IBOutlet PaintingView *maskPaintingView;
 
@@ -46,6 +49,7 @@
 @end
 
 @implementation MaskViewController
+@synthesize imageView = _imageView;
 @synthesize maskPaintingView;
 
 - (void)viewDidLoad
@@ -55,7 +59,8 @@
     
     CGRect rect = [[UIScreen mainScreen] applicationFrame];
 
-
+    UIImage *startImage = [ImageFileWriter getSavedImage];
+    _imageView.image = startImage;
     /*
     // Create a segmented control so that the user can choose the brush color.
 	UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:
@@ -92,15 +97,15 @@
                                              [UIImage imageNamed:@"brush_large.png"],
                                              nil]];
 	
-	// Compute a rectangle that is positioned correctly for the segmented control you'll use as a brush color palette
+	// Compute a rectangle that is positioned correctly for the segmented control you'll use as a brush size palette
 	CGRect frame2 = CGRectMake(rect.origin.x + kLeftMargin, (rect.size.height - 50 - kTopMargin), rect.size.width - (kLeftMargin + kRightMargin), 50);
 	brushSizeSegControl.frame = frame2;
-	// When the user chooses a color, the method changeBrushColor: is called.
+	// When the user chooses a size, the method changeBrushSize: is called.
 	[brushSizeSegControl addTarget:self action:@selector(changeBrushSize:) forControlEvents:UIControlEventValueChanged];
 	brushSizeSegControl.segmentedControlStyle = UISegmentedControlStyleBar;
 	// Make sure the color of the color complements the black background
 	brushSizeSegControl.tintColor = [UIColor lightGrayColor];
-	// Set the third color (index values start at 0)
+	// Set the middle brush size (index values start at 0)
 	brushSizeSegControl.selectedSegmentIndex = 1;
 	
 	// Add the control to the window
@@ -153,6 +158,7 @@
     [self setRedrawButton:nil];
     [self setEraseSwitch:nil];
     [self setGetMaskButton:nil];
+    [self setImageView:nil];
     [super viewDidUnload];
 }
 
@@ -179,9 +185,69 @@
 }
 
 - (IBAction)saveImageToAlbum:(id)sender {
+    CGSize siz = _imageView.image.size;
+
+    CGImageRef maskRef = [maskPaintingView getMaskFromDrawing:siz].CGImage;
+ //   CGImageRef maskRef = [UIImage imageNamed:@"mask.png"].CGImage;
+   
     
-    [maskPaintingView getMaskFromDrawing];
+    
+    UIImage *inputImage = _imageView.image;
+	
+                                        
+    CGImageRef mask = CGImageMaskCreate(CGImageGetWidth(maskRef),
+                                        CGImageGetHeight(maskRef),
+                                        CGImageGetBitsPerComponent(maskRef),
+                                        CGImageGetBitsPerPixel(maskRef),
+                                        CGImageGetBytesPerRow(maskRef),
+                                        CGImageGetDataProvider(maskRef), NULL, false);
+    
+    CGImageRef masked = CGImageCreateWithMask([inputImage CGImage], mask);
+    CGImageRelease(mask);
+    
+    
+    
+    
+       
+        
+        
+        
+    
+    UIImage *maskedImage = [UIImage imageWithCGImage:masked];
+    
+    CGImageRelease(masked);
+    
+    
+    [maskPaintingView erase];
+    
+    [ImageFileWriter setSavedImage:maskedImage];
+    
+//    _imageView.image = maskedImage;
+    _imageView.image = [ImageFileWriter getSavedImage];
+
+  //  [ImageFileWriter writeImageToFile:maskedImage];
+    
+    /*
+    NSString *imageName = @"OpenGLImage.png";
+    NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,  NSUserDomainMask, YES);
+    NSString * documentsDirectoryPath = [paths objectAtIndex:0];
+    
+    NSString *dataPath = [documentsDirectoryPath  stringByAppendingPathComponent:imageName];
+    
+    NSLog(@"%@", dataPath);
+    
+    
+    NSData* settingsData = UIImagePNGRepresentation(maskedImage);
+    
+    [settingsData writeToFile:dataPath atomically:YES];
+    */
+
 }
+
+
+
+
+
 
 
 
