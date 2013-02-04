@@ -33,6 +33,8 @@
 		1A3BF34816BB17CB00BE7284 /* mickiWithArragement.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 1A3BF34716BB17CB00BE7284 /* mickiWithArragement.jpg */; };
 		1A3BF34A16BC496600BE7284 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3BF34916BC496600BE7284 /* MobileCoreServices.framework */; };
 		1A3BF35016BC6D6200BE7284 /* ImagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3BF34F16BC6D6200BE7284 /* ImagePickerViewController.m */; };
+		1AA2C3AC16C054A30060603D /* pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AA2C3AB16C054A30060603D /* pattern.png */; };
+		1AA2C3AF16C056000060603D /* PositionMaskImage_VC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2C3AE16C056000060603D /* PositionMaskImage_VC.m */; };
 		FA05788E16BD85F9007B6576 /* mask.png in Resources */ = {isa = PBXBuildFile; fileRef = FA05788D16BD85F9007B6576 /* mask.png */; };
 		FA05789116BDA313007B6576 /* ImageFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA05789016BDA313007B6576 /* ImageFileWriter.m */; };
 /* End PBXBuildFile section */
@@ -73,6 +75,9 @@
 		1A3BF34916BC496600BE7284 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		1A3BF34E16BC6D6200BE7284 /* ImagePickerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePickerViewController.h; sourceTree = "<group>"; };
 		1A3BF34F16BC6D6200BE7284 /* ImagePickerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePickerViewController.m; sourceTree = "<group>"; };
+		1AA2C3AB16C054A30060603D /* pattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pattern.png; sourceTree = "<group>"; };
+		1AA2C3AD16C056000060603D /* PositionMaskImage_VC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionMaskImage_VC.h; sourceTree = "<group>"; };
+		1AA2C3AE16C056000060603D /* PositionMaskImage_VC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionMaskImage_VC.m; sourceTree = "<group>"; };
 		FA05788D16BD85F9007B6576 /* mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mask.png; sourceTree = "<group>"; };
 		FA05788F16BDA313007B6576 /* ImageFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFileWriter.h; sourceTree = "<group>"; };
 		FA05789016BDA313007B6576 /* ImageFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFileWriter.m; sourceTree = "<group>"; };
@@ -143,6 +148,8 @@
 				1A3BF33216B9D0FC00BE7284 /* PaintingView.m */,
 				FA05788F16BDA313007B6576 /* ImageFileWriter.h */,
 				FA05789016BDA313007B6576 /* ImageFileWriter.m */,
+				1AA2C3AD16C056000060603D /* PositionMaskImage_VC.h */,
+				1AA2C3AE16C056000060603D /* PositionMaskImage_VC.m */,
 			);
 			path = Tinker;
 			sourceTree = "<group>";
@@ -164,6 +171,7 @@
 		1A3BF33316B9D34200BE7284 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				1AA2C3AB16C054A30060603D /* pattern.png */,
 				FA05788D16BD85F9007B6576 /* mask.png */,
 				1A3BF34716BB17CB00BE7284 /* mickiWithArragement.jpg */,
 				1A3BF34116BAFBB100BE7284 /* brush_large.png */,
@@ -245,6 +253,7 @@
 				1A3BF34616BAFBB200BE7284 /* brush_small.png in Resources */,
 				1A3BF34816BB17CB00BE7284 /* mickiWithArragement.jpg in Resources */,
 				FA05788E16BD85F9007B6576 /* mask.png in Resources */,
+				1AA2C3AC16C054A30060603D /* pattern.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,6 +271,7 @@
 				1A3BF34016BAC8B200BE7284 /* PaintingView.m in Sources */,
 				1A3BF35016BC6D6200BE7284 /* ImagePickerViewController.m in Sources */,
 				FA05789116BDA313007B6576 /* ImageFileWriter.m in Sources */,
+				1AA2C3AF16C056000060603D /* PositionMaskImage_VC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

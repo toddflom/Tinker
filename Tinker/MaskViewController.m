@@ -23,6 +23,7 @@
 #define kRightMargin			10.0
 
 
+#define radians( degrees ) ( ( degrees ) / 180.0 * M_PI )
 
 
 
@@ -52,41 +53,30 @@
 @synthesize imageView = _imageView;
 @synthesize maskPaintingView;
 
+
+/*
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+}
+*/
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    
+   UIColor *patternColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"pattern.png"]];
+   self.view.backgroundColor = patternColor;                                                                                               
+                                                                                               
+    
     CGRect rect = [[UIScreen mainScreen] applicationFrame];
 
     UIImage *startImage = [ImageFileWriter getSavedImage];
     _imageView.image = startImage;
-    /*
-    // Create a segmented control so that the user can choose the brush color.
-	UISegmentedControl *segmentedControl = [[UISegmentedControl alloc] initWithItems:
-											[NSArray arrayWithObjects:
-                                             [UIImage imageNamed:@"Red.png"],
-                                             [UIImage imageNamed:@"Yellow.png"],
-                                             [UIImage imageNamed:@"Green.png"],
-                                             [UIImage imageNamed:@"Blue.png"],
-                                             [UIImage imageNamed:@"Purple.png"],
-                                             nil]];
-	
-	// Compute a rectangle that is positioned correctly for the segmented control you'll use as a brush color palette
-	CGRect frame = CGRectMake(rect.origin.x + kLeftMargin, rect.size.height - kPaletteHeight - kTopMargin, rect.size.width - (kLeftMargin + kRightMargin), kPaletteHeight);
-	segmentedControl.frame = frame;
-	// When the user chooses a color, the method changeBrushColor: is called.
-	[segmentedControl addTarget:self action:@selector(changeBrushColor:) forControlEvents:UIControlEventValueChanged];
-	segmentedControl.segmentedControlStyle = UISegmentedControlStyleBar;
-	// Make sure the color of the color complements the black background
-	segmentedControl.tintColor = [UIColor lightGrayColor];
-	// Set the third color (index values start at 0)
-	segmentedControl.selectedSegmentIndex = 2;
-	
-	// Add the control to the window
-	[self.view addSubview:segmentedControl];
-    */
-    
     
     
     // Create a segmented control so that the user can choose the brush size.
@@ -206,14 +196,11 @@
     CGImageRelease(mask);
     
     
+  //  [inputImage rotate:UIImageOrientationLeft];
     
-    
-       
-        
-        
-        
     
     UIImage *maskedImage = [UIImage imageWithCGImage:masked];
+ //   UIImage *maskedImage = [self maskImage:inputImage withMask:[maskPaintingView getMaskFromDrawing:siz]];
     
     CGImageRelease(masked);
     
@@ -222,29 +209,133 @@
     
     [ImageFileWriter setSavedImage:maskedImage];
     
-//    _imageView.image = maskedImage;
-    _imageView.image = [ImageFileWriter getSavedImage];
+    _imageView.image = maskedImage;
+//    _imageView.image = [ImageFileWriter getSavedImage];
 
   //  [ImageFileWriter writeImageToFile:maskedImage];
     
-    /*
-    NSString *imageName = @"OpenGLImage.png";
-    NSArray * paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,  NSUserDomainMask, YES);
-    NSString * documentsDirectoryPath = [paths objectAtIndex:0];
     
-    NSString *dataPath = [documentsDirectoryPath  stringByAppendingPathComponent:imageName];
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard"
+                                                             bundle: nil];
     
-    NSLog(@"%@", dataPath);
+    UIViewController *controller = (UIViewController*)[mainStoryboard
+                                                       instantiateViewControllerWithIdentifier: @"PositionMask"];
+        
+    [self.navigationController pushViewController:controller animated:YES];
     
     
-    NSData* settingsData = UIImagePNGRepresentation(maskedImage);
     
-    [settingsData writeToFile:dataPath atomically:YES];
-    */
 
 }
 
 
+
+
+// This is what we have to do if the image comes directly from UIPicker (it's rotated 
+/*
+- (UIImage*) maskImage:(UIImage *)image withMask:(UIImage *)maskImage {
+    
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    //UIImage *maskImage = [UIImage imageNamed:@"mask.png"];
+    CGImageRef maskImageRef = [maskImage CGImage];
+    
+    // create a bitmap graphics context the size of the image
+    CGContextRef mainViewContentContext = CGBitmapContextCreate (NULL, image.size.width, image.size.height, 8, 0, colorSpace, kCGImageAlphaPremultipliedLast);
+    
+    
+    if (mainViewContentContext==NULL)
+        return NULL;
+    
+    CGFloat ratio = 0;
+    
+    ratio = image.size.width/ maskImage.size.width;
+    
+    if(ratio *  maskImage.size.height < image.size.height) {
+        ratio = image.size.width/ maskImage.size.width;
+    }
+    
+//    CGRect rect1  = {{0, 0}, {image.size.width, image.size.height}};
+    CGRect rect1  = {{0, 0}, {image.size.height, image.size.width}};
+    CGRect rect2  = {{-((maskImage.size.width*ratio)-image.size.width)/2 , -((maskImage.size.height*ratio)-image.size.height)/2}, {maskImage.size.width*ratio, maskImage.size.height*ratio}};
+    
+    
+    CGContextClipToMask(mainViewContentContext, rect2, maskImageRef);
+    
+    CGContextRotateCTM (mainViewContentContext, radians(270)); // rotating -90
+    CGContextTranslateCTM(mainViewContentContext, -image.size.height, 0); // -rect2.size.height); // to bring the image back into the context
+    
+    CGContextDrawImage(mainViewContentContext, rect1, image.CGImage);
+    
+    
+    // Create CGImageRef of the main view bitmap content, and then
+    // release that bitmap context
+    CGImageRef newImage = CGBitmapContextCreateImage(mainViewContentContext);
+    CGContextRelease(mainViewContentContext);
+    
+    UIImage *theImage = [UIImage imageWithCGImage:newImage];
+    
+    CGImageRelease(newImage);
+    
+    // return the image
+    return theImage;
+}
+*/
+
+
+
+
+
+
+- (UIImage*) maskImage:(UIImage *)image withMask:(UIImage *)maskImage {
+      
+    
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    //UIImage *maskImage = [UIImage imageNamed:@"mask.png"];
+    CGImageRef maskImageRef = [maskImage CGImage];
+    
+    // create a bitmap graphics context the size of the image
+    CGContextRef mainViewContentContext = CGBitmapContextCreate (NULL, maskImage.size.width, maskImage.size.height, 8, 0, colorSpace, kCGImageAlphaPremultipliedLast);
+    
+    
+    if (mainViewContentContext==NULL)
+        return NULL;
+    
+    CGFloat ratio = 0;
+    
+    ratio = maskImage.size.width/ image.size.width;
+    
+    if(ratio * image.size.height < maskImage.size.height) {
+        ratio = maskImage.size.height/ image.size.height;
+    }
+    
+    CGRect rect1  = {{0, 0}, {maskImage.size.width, maskImage.size.height}};
+//    CGRect rect2  = {{-((image.size.width*ratio)-maskImage.size.width)/2 , -((image.size.height*ratio)-maskImage.size.height)/2}, {image.size.width*ratio, image.size.height*ratio}};
+    CGRect rect2  = {{-((image.size.height*ratio)-maskImage.size.width)/2 , -((image.size.width*ratio)-maskImage.size.height)/2}, {image.size.height*ratio, image.size.width*ratio}}; // because we are rotating
+    
+    
+    CGContextClipToMask(mainViewContentContext, rect1, maskImageRef);
+    
+  //  CGContextRotateCTM (mainViewContentContext, radians(270)); // rotating -90
+  //  CGContextTranslateCTM(mainViewContentContext, -400.0, -60.0); // -rect2.size.height); // to bring the image back into the context
+    
+    CGContextDrawImage(mainViewContentContext, rect2, image.CGImage);
+        
+    
+    // Create CGImageRef of the main view bitmap content, and then
+    // release that bitmap context
+    CGImageRef newImage = CGBitmapContextCreateImage(mainViewContentContext);
+    CGContextRelease(mainViewContentContext);
+    
+    UIImage *theImage = [UIImage imageWithCGImage:newImage];
+    
+    CGImageRelease(newImage);
+    
+    // return the image
+    return theImage;
+}
 
 
 
