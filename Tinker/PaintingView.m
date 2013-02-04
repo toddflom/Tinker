@@ -109,6 +109,7 @@ CGImageRef createMaskWithImage(CGImageRef image);
 		// Setup OpenGL states
 		glMatrixMode(GL_PROJECTION);
 		CGRect frame = self.bounds;
+        NSLog(@"width: %f height: %f", frame.size.width, frame.size.height);
 		CGFloat scale = self.contentScaleFactor;
 		// Setup the view port in Pixels
 		glOrthof(0, frame.size.width * scale, 0, frame.size.height * scale, -1, 1);
