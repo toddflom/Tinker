@@ -38,6 +38,7 @@
 @property (weak, nonatomic) IBOutlet UISwitch *eraseSwitch;
 @property (weak, nonatomic) IBOutlet UIButton *getMaskButton;
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
+@property (weak, nonatomic) IBOutlet UIView *backgroundView;
 
 
 @property (strong, nonatomic) IBOutlet PaintingView *maskPaintingView;
@@ -69,9 +70,7 @@
 	// Do any additional setup after loading the view, typically from a nib.
     
     
-   UIColor *patternColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"pattern.png"]];
-   self.view.backgroundColor = patternColor;                                                                                               
-                                                                                               
+                                            
     
     CGRect rect = [[UIScreen mainScreen] applicationFrame];
 
@@ -117,6 +116,15 @@
 
     [maskPaintingView setBrushColorWithRed:1.0 green:0.0 blue:0.0];
     
+    
+    CGSize imageSize = _imageView.image.size;
+    CGFloat imageScale = fminf(CGRectGetWidth(_imageView.bounds)/imageSize.width, CGRectGetHeight(_imageView.bounds)/imageSize.height);
+    CGSize scaledImageSize = CGSizeMake(imageSize.width*imageScale, imageSize.height*imageScale);
+    CGRect imageFrame = CGRectMake(floorf(0.5f*(CGRectGetWidth(_imageView.bounds)-scaledImageSize.width)), floorf(0.5f*(CGRectGetHeight(_imageView.bounds)-scaledImageSize.height)), scaledImageSize.width, scaledImageSize.height);
+    NSLog(@"%@", NSStringFromCGRect(imageFrame));
+    
+    maskPaintingView.frame = CGRectMake( maskPaintingView.frame.origin.x + imageFrame.origin.x , maskPaintingView.frame.origin.y + imageFrame.origin.y, imageFrame.size.width, imageFrame.size.height );
+    
 }
 
 
@@ -149,6 +157,7 @@
     [self setEraseSwitch:nil];
     [self setGetMaskButton:nil];
     [self setImageView:nil];
+    [self setBackgroundView:nil];
     [super viewDidUnload];
 }
 
@@ -176,24 +185,28 @@
 
 - (IBAction)saveImageToAlbum:(id)sender {
     CGSize siz = _imageView.image.size;
+    
+    
+  
+    
 
     CGImageRef maskRef = [maskPaintingView getMaskFromDrawing:siz].CGImage;
  //   CGImageRef maskRef = [UIImage imageNamed:@"mask.png"].CGImage;
    
-    
+
     
     UIImage *inputImage = _imageView.image;
 	
-                                        
-    CGImageRef mask = CGImageMaskCreate(CGImageGetWidth(maskRef),
-                                        CGImageGetHeight(maskRef),
-                                        CGImageGetBitsPerComponent(maskRef),
-                                        CGImageGetBitsPerPixel(maskRef),
-                                        CGImageGetBytesPerRow(maskRef),
-                                        CGImageGetDataProvider(maskRef), NULL, false);
     
-    CGImageRef masked = CGImageCreateWithMask([inputImage CGImage], mask);
-    CGImageRelease(mask);
+//    CGImageRef mask = CGImageMaskCreate(CGImageGetWidth(maskRef),
+//                                        CGImageGetHeight(maskRef),
+//                                        CGImageGetBitsPerComponent(maskRef),
+//                                        CGImageGetBitsPerPixel(maskRef),
+//                                        CGImageGetBytesPerRow(maskRef),
+//                                        CGImageGetDataProvider(maskRef), NULL, false);
+
+    CGImageRef masked = CGImageCreateWithMask([inputImage CGImage], maskRef);
+//    CGImageRelease(mask);
     
     
   //  [inputImage rotate:UIImageOrientationLeft];
@@ -215,8 +228,7 @@
   //  [ImageFileWriter writeImageToFile:maskedImage];
     
     
-    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard"
-                                                             bundle: nil];
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
     
     UIViewController *controller = (UIViewController*)[mainStoryboard
                                                        instantiateViewControllerWithIdentifier: @"PositionMask"];
@@ -306,6 +318,8 @@
     CGFloat ratio = 0;
     
     ratio = maskImage.size.width/ image.size.width;
+    
+  //  NSLog(@"maskimage width: %f, height: %f", maskImage.size.width, maskImage.size.height);
     
     if(ratio * image.size.height < maskImage.size.height) {
         ratio = maskImage.size.height/ image.size.height;

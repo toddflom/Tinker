@@ -12,11 +12,12 @@
     // Instance variables:
     //   - Declare as usual.  The alloc/sharedIntance.
     UIImage *savedImage;
+    BOOL isFirstImgSet;
 }
 
 // Properties as usual
 @property (nonatomic, retain) UIImage *savedImage;
-
+@property (nonatomic, readwrite) BOOL isFirstImgSet;
 
 // Required: A method to retrieve the shared instance
 +(ImageFileWriter *) sharedInstance;

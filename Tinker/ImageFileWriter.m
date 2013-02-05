@@ -15,7 +15,7 @@ static NSString *ImageFileName = @"SavedRendering.png";
 @implementation ImageFileWriter
 
 
-@synthesize savedImage;
+@synthesize savedImage, isFirstImgSet;
 
 #pragma mark Singleton Implementation
 static ImageFileWriter *sharedObject;
@@ -30,14 +30,24 @@ static ImageFileWriter *sharedObject;
 
 
 #pragma mark Shared Public Methods
++(BOOL) getSomeData {
+    ImageFileWriter *shared = [ImageFileWriter sharedInstance];
+    return shared.isFirstImgSet;
+}
+
++(void) setSomeData:(BOOL)isFirstImgSet {
+    ImageFileWriter *shared = [ImageFileWriter sharedInstance];
+    shared.isFirstImgSet = isFirstImgSet;
+}
+
+
+
 +(NSString *) getSavedImage {
-    // Ensure we are using the shared instance
     ImageFileWriter *shared = [ImageFileWriter sharedInstance];
     return shared.savedImage;
 }
 
 +(void) setSavedImage:(NSString *)savedImage {
-    // Ensure we are using the shared instance
     ImageFileWriter *shared = [ImageFileWriter sharedInstance];
     shared.savedImage = savedImage;
 }

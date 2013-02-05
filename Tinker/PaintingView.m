@@ -21,6 +21,8 @@
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo;
 - (UIImage *) drawableToCGImage;
 
+- (CGImageRef) createMaskWithImageAlpha: (UIImage *) originalImage;
+
 CGImageRef createMaskWithImage(CGImageRef image);
 @end
 
@@ -138,6 +140,7 @@ CGImageRef createMaskWithImage(CGImageRef image);
 	//		[self performSelector:@selector(playback:) withObject:recordedPaths afterDelay:0.2];
 	}
 	
+    [self fill];
 	return self;
 }
 
@@ -236,6 +239,23 @@ CGImageRef createMaskWithImage(CGImageRef image);
 	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 
+
+// Fills the screen
+- (void) fill
+{
+        
+    [EAGLContext setCurrentContext:context];
+
+	glBindFramebufferOES(GL_FRAMEBUFFER_OES, viewFramebuffer);
+	glClearColor(1.0f, 0.5f, 0.5f, 1.0);
+	glClear(GL_COLOR_BUFFER_BIT);
+	    
+	glBindRenderbufferOES(GL_RENDERBUFFER_OES, viewRenderbuffer);
+    [context presentRenderbuffer:GL_RENDERBUFFER_OES];
+}
+
+
+
 // Drawings a line onscreen based on where the user touches
 - (void) renderLineFromPoint:(CGPoint)start toPoint:(CGPoint)end
 {
@@ -281,42 +301,6 @@ CGImageRef createMaskWithImage(CGImageRef image);
 	[context presentRenderbuffer:GL_RENDERBUFFER_OES];
 }
 
-
-/*
-- (void)playRecordedData {
-    
-    if(recordingArray != NULL){
-        
-        for(int l = 0; l < [recordingArray count]; l++){
-            //replays my writRay -1 because of location point
-            for(int p = 0; p < [[recordingArray objectAtIndex:l]count] -1; p ++){
-                [self renderLineFromPoint:[[[recordingArray objectAtIndex:l]objectAtIndex:p]CGPointValue] toPoint:[[[recordingArray objectAtIndex:l]objectAtIndex:p + 1]CGPointValue]];
-            }
-        }
-    }
-}
- */
-
-
-/*
-// Reads previously recorded points and draws them onscreen. This is the Shake Me message that appears when the application launches.
-- (void) playback:(NSMutableArray*)recordedPaths
-{
-	NSData*				data = [recordedPaths objectAtIndex:0];
-	CGPoint*			point = (CGPoint*)[data bytes];
-	NSUInteger			count = [data length] / sizeof(CGPoint),
-						i;
-	
-	// Render the current path
-	for(i = 0; i < count - 1; ++i, ++point)
-		[self renderLineFromPoint:*point toPoint:*(point + 1)];
-	
-	// Render the next path after a short delay 
-	[recordedPaths removeObjectAtIndex:0];
-	if([recordedPaths count])
-		[self performSelector:@selector(playback:) withObject:recordedPaths afterDelay:0.01];
-}
-*/
 
 
 // Handles the start of a touch
@@ -390,13 +374,15 @@ CGImageRef createMaskWithImage(CGImageRef image);
 
 - (UIImage *) getMaskFromDrawing:(CGSize)siz {
     
-  // UIImage *image = [self drawableToCGImage];
+  UIImage *imageOrig = [self drawableToCGImage];
     
-    UIImage *imageOrig = [self glToUIImage];
+   // UIImage *imageOrig = [self glToUIImage:siz];
     
   //  UIImage *image = [self seperatAlphaFromImage:imageOrig withSize:siz];
     
-    UIImage *image = [UIImage imageWithCGImage:createMaskWithImage(imageOrig.CGImage)];
+  //  UIImage *image = [UIImage imageWithCGImage:createMaskWithImage(imageOrig.CGImage)];
+    
+    UIImage *image = [UIImage imageWithCGImage:[self createMaskWithImageAlpha: imageOrig]];
     
   // UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
     
@@ -404,55 +390,6 @@ CGImageRef createMaskWithImage(CGImageRef image);
 
 
 }
-
-
-
-
-- (UIImage *) glToUIImage {
-    NSInteger myDataLength = 320 * 480 * 4;
-	
-    // allocate array and read pixels into it.
-    GLubyte *buffer = (GLubyte *) malloc(myDataLength);
-    glReadPixels(0, 0, 320, 480, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	
-    // gl renders \"upside down\" so swap top to bottom into new array.
-    // there's gotta be a better way, but this works.
-    GLubyte *buffer2 = (GLubyte *) malloc(myDataLength);
-    for(int y = 0; y <480; y++)
-    {
-        for(int x = 0; x <320 * 4; x++)
-        {
-            buffer2[(479 - y) * 320 * 4 + x] = buffer[y * 4 * 320 + x];
-        }
-    }
-	
-    // make data provider with data.
-    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer2, myDataLength, NULL);
-	
-    // prep the ingredients
-    int bitsPerComponent = 8;
-    int bitsPerPixel = 32;
-    int bytesPerRow = 4 * 320;
-    CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
-	
-    //xxxxxx This is the line of code that I found in multiple solutions throughout the web but doesn't deal with the transparency
-    // CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
-    //xxxxxx
-    
-    //*******This is the code I used to handle the tranparency!!!
-    CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedLast;
-    //*******
-    
-    CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
-	
-    // make the cgimage
-    CGImageRef imageRef = CGImageCreate(320, 480, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, NULL, NO, renderingIntent);
-	
-    // then make the uiimage from that
-    UIImage *myImage = [UIImage imageWithCGImage:imageRef];
-    return myImage;
-}
-
 
 - (void)image:(UIImage *)image didFinishSavingWithError:(NSError *)error contextInfo:(void *)contextInfo
 {
@@ -508,8 +445,7 @@ CGImageRef createMaskWithImage(CGImageRef image);
 }
 
 
-// UNUSED
-/*
+
 -(UIImage *) drawableToCGImage 
 {
     GLint backingWidth2, backingHeight2;
@@ -577,7 +513,7 @@ CGImageRef createMaskWithImage(CGImageRef image);
  //   [self imageDump:finalMaskImage];
 
     
-    UIImage *maskImage = [self seperatAlphaFromImage:image];
+//    UIImage *maskImage = [self seperatAlphaFromImage:image];
     
     
     
@@ -597,19 +533,77 @@ CGImageRef createMaskWithImage(CGImageRef image);
     
   //  UIImage *flippedImg = [self flipImageVertically:image];
     
-//    return image;
-    return maskImage;
+    return image;
+ //   return maskImage;
 
     
 }
-*/
 
 
 
-CGImageRef createMaskWithImage(CGImageRef image)
+
+
+- (CGImageRef) createMaskWithImageAlpha: (UIImage *) originalImage { // Gets the inverse of the alpha
+    
+    // Original RGBA image
+    CGImageRef originalMaskImage = [originalImage CGImage];
+    float width = CGImageGetWidth(originalMaskImage);
+    float height = CGImageGetHeight(originalMaskImage);
+    
+    // Make a bitmap context that's only 1 alpha channel
+    // WARNING: the bytes per row probably needs to be a multiple of 4
+    int strideLength = ROUND_UP(width * 1, 4);
+    unsigned char * alphaData = calloc(strideLength * height, sizeof(unsigned char));
+    CGContextRef alphaOnlyContext = CGBitmapContextCreate(alphaData,
+                                                          width,
+                                                          height,
+                                                          8,
+                                                          strideLength,
+                                                          NULL,
+                                                          kCGImageAlphaOnly);
+    
+    // Draw the RGBA image into the alpha-only context.
+    CGContextDrawImage(alphaOnlyContext, CGRectMake(0, 0, width, height), originalMaskImage);
+    
+    // Walk the pixels and invert the alpha value. This lets you colorize the opaque shapes in the original image.
+    // If you want to do a traditional mask (where the opaque values block) just get rid of these loops.
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            unsigned char val = alphaData[y*strideLength + x];
+            val = 255 - val;
+            alphaData[y*strideLength + x] = val;
+        }
+    }
+    
+    CGImageRef alphaMaskImage = CGBitmapContextCreateImage(alphaOnlyContext);
+    CGContextRelease(alphaOnlyContext);
+    free(alphaData);
+    
+    // Make a mask
+    CGImageRef finalMaskImage = CGImageMaskCreate(CGImageGetWidth(alphaMaskImage),
+                                                  CGImageGetHeight(alphaMaskImage),
+                                                  CGImageGetBitsPerComponent(alphaMaskImage),
+                                                  CGImageGetBitsPerPixel(alphaMaskImage),
+                                                  CGImageGetBytesPerRow(alphaMaskImage),
+                                                  CGImageGetDataProvider(alphaMaskImage), NULL, false);
+    CGImageRelease(alphaMaskImage);
+    return finalMaskImage;
+}
+
+
+
+
+
+
+
+CGImageRef createMaskWithImage(CGImageRef image)  // gets the non-reversed aplha channel of the image
 {
     int maskWidth               = CGImageGetWidth(image);
     int maskHeight              = CGImageGetHeight(image);
+    
+ //   NSLog(@"createMaskWithImage width: %d, height: %d", maskWidth, maskHeight);
+
+    
     //  round bytesPerRow to the nearest 16 bytes, for performance's sake
     int bytesPerRow             = (maskWidth + 15) & 0xfffffff0;
     int bufferSize              = bytesPerRow * maskHeight;
@@ -638,6 +632,63 @@ CGImageRef createMaskWithImage(CGImageRef image)
     
     return mask;
 }
+
+
+
+
+
+// UNUSED
+
+/*
+ 
+ - (UIImage *) glToUIImage { // this should be the size of whatever the painting view rect is in the view
+ NSInteger myDataLength = 320 * 480 * 4;
+ 
+ // allocate array and read pixels into it.
+ GLubyte *buffer = (GLubyte *) malloc(myDataLength);
+ glReadPixels(0, 0, 320, 480, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+ 
+ // gl renders \"upside down\" so swap top to bottom into new array.
+ // there's gotta be a better way, but this works.
+ GLubyte *buffer2 = (GLubyte *) malloc(myDataLength);
+ for(int y = 0; y <480; y++)
+ {
+ for(int x = 0; x <320 * 4; x++)
+ {
+ buffer2[(479 - y) * 320 * 4 + x] = buffer[y * 4 * 320 + x];
+ }
+ }
+ 
+ // make data provider with data.
+ CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer2, myDataLength, NULL);
+ 
+ // prep the ingredients
+ int bitsPerComponent = 8;
+ int bitsPerPixel = 32;
+ int bytesPerRow = 4 * 320;
+ CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
+ 
+ //xxxxxx This is the line of code that I found in multiple solutions throughout the web but doesn't deal with the transparency
+ // CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
+ //xxxxxx
+ 
+ //*******This is the code I used to handle the tranparency!!!
+ CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedLast;
+ //*******
+ 
+ CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
+ 
+ // make the cgimage
+ CGImageRef imageRef = CGImageCreate(320, 480, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, NULL, NO, renderingIntent);
+ 
+ // then make the uiimage from that
+ UIImage *myImage = [UIImage imageWithCGImage:imageRef];
+ return myImage;
+ }
+ 
+ */
+
+
 
 
 // UNUSED
@@ -695,60 +746,41 @@ CGImageRef createMaskWithImage(CGImageRef image)
 
 
 
-- (CGImageRef) createMaskWithImageAlpha: (CGContextRef) originalImageContext {
-    
-    UInt8 *data = (UInt8 *)CGBitmapContextGetData(originalImageContext);
-    
-    float width = CGBitmapContextGetBytesPerRow(originalImageContext) / 4;
-    float height = CGBitmapContextGetHeight(originalImageContext);
-    
-    // Make a bitmap context that's only 1 alpha channel
-    // WARNING: the bytes per row probably needs to be a multiple of 4
-    int strideLength = ROUND_UP(width * 1, 4);
-    unsigned char * alphaData = (unsigned char * )calloc(strideLength * height, 1);
-    CGContextRef alphaOnlyContext = CGBitmapContextCreate(alphaData,
-                                                          width,
-                                                          height,
-                                                          8,
-                                                          strideLength,
-                                                          NULL,
-                                                          kCGImageAlphaOnly);
-    
-    // Draw the RGBA image into the alpha-only context.
-    //CGContextDrawImage(alphaOnlyContext, CGRectMake(0, 0, width, height), originalMaskImage);
-    
-    // Walk the pixels and invert the alpha value. This lets you colorize the opaque shapes in the original image.
-    // If you want to do a traditional mask (where the opaque values block) just get rid of these loops.
-    
-    
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            //unsigned char val = alphaData[y*strideLength + x];
-            unsigned char val = data[y*(int)width*4 + x*4 + 3];
-            val = 255 - val;
-            alphaData[y*strideLength + x] = val;
-        }
-    }
-    
-    
-    CGImageRef alphaMaskImage = CGBitmapContextCreateImage(alphaOnlyContext);
-    CGContextRelease(alphaOnlyContext);
-    free(alphaData);
-    
-    // Make a mask
-    CGImageRef finalMaskImage = CGImageMaskCreate(CGImageGetWidth(alphaMaskImage),
-                                                  CGImageGetHeight(alphaMaskImage),
-                                                  CGImageGetBitsPerComponent(alphaMaskImage),
-                                                  CGImageGetBitsPerPixel(alphaMaskImage),
-                                                  CGImageGetBytesPerRow(alphaMaskImage),
-                                                  CGImageGetDataProvider(alphaMaskImage),     NULL, false);
-    CGImageRelease(alphaMaskImage);
-    
-    return finalMaskImage;
-}
+/*
+ - (void)playRecordedData {
+ 
+ if(recordingArray != NULL){
+ 
+ for(int l = 0; l < [recordingArray count]; l++){
+ //replays my writRay -1 because of location point
+ for(int p = 0; p < [[recordingArray objectAtIndex:l]count] -1; p ++){
+ [self renderLineFromPoint:[[[recordingArray objectAtIndex:l]objectAtIndex:p]CGPointValue] toPoint:[[[recordingArray objectAtIndex:l]objectAtIndex:p + 1]CGPointValue]];
+ }
+ }
+ }
+ }
+ */
 
 
-
+/*
+ // Reads previously recorded points and draws them onscreen. This is the Shake Me message that appears when the application launches.
+ - (void) playback:(NSMutableArray*)recordedPaths
+ {
+ NSData*				data = [recordedPaths objectAtIndex:0];
+ CGPoint*			point = (CGPoint*)[data bytes];
+ NSUInteger			count = [data length] / sizeof(CGPoint),
+ i;
+ 
+ // Render the current path
+ for(i = 0; i < count - 1; ++i, ++point)
+ [self renderLineFromPoint:*point toPoint:*(point + 1)];
+ 
+ // Render the next path after a short delay
+ [recordedPaths removeObjectAtIndex:0];
+ if([recordedPaths count])
+ [self performSelector:@selector(playback:) withObject:recordedPaths afterDelay:0.01];
+ }
+ */
 
 
 

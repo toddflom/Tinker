@@ -15,7 +15,6 @@
 }
 
 @property (weak, nonatomic) IBOutlet UIImageView *imageView;
-- (IBAction)switchImage:(id)sender;
 - (IBAction)useCamera:(id)sender;
 - (IBAction)useCameraRoll:(id)sender;
 
@@ -51,6 +50,8 @@
     return self;
 }
 
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -70,12 +71,6 @@
     [self setCameraButton:nil];
     [self setCameraRollButton:nil];
     [super viewDidUnload];
-}
-
-
-- (IBAction)switchImage:(id)sender {
-    [imageView setImage:[UIImage imageNamed:@"mickiWithArragement.jpg"]];
-
 }
 
 
@@ -122,14 +117,7 @@
     UIViewController *controller = (UIViewController*)[mainStoryboard
                                                        instantiateViewControllerWithIdentifier: @"MaskView"];
     
-//    controller.controlFlag = YES;
-//    controller.controlFlag2 = NO; // Just examples
-    
-    //These flags will be set before the viewDidLoad of MenuScreenViewController
-    //Therefore any code you write before pushing or presenting the view will be present after
-    
    [self.navigationController pushViewController:controller animated:YES];
-   // [self presentViewController:controller animated:YES];
 }
 
 
