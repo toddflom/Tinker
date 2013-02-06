@@ -9,24 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
-
-
-//delegate to return amount entered by the user
-@protocol ImagePickerDelegate <NSObject>
-
--(void) finishedImagePick;
-
-@end
-
-
-
-
-@interface ImagePickerViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate> {
-    
-//     id<ImagePickerDelegate> delegate;
-}
-
-
-@property (nonatomic, weak) id <ImagePickerDelegate> delegate;
+@interface ImagePickerViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @end

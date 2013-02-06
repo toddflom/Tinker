@@ -10,8 +10,6 @@
 #import "imageFileWriter.h"
 
 
-
-
 @interface ImagePickerViewController () {
     BOOL newMedia;
 }
@@ -40,7 +38,6 @@
 @synthesize cameraRollButton;
 @synthesize cancelButton;
 @synthesize useImageButton;
-@synthesize delegate;
 
 @synthesize imageView;
 
@@ -116,7 +113,6 @@
 
 
 - (IBAction)UseImage:(id)sender {
-/*
     [ImageFileWriter setIsFirstImgSet:YES];
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
     
@@ -124,17 +120,6 @@
                                                        instantiateViewControllerWithIdentifier: @"MaskView"];
     
    [self.navigationController pushViewController:controller animated:YES];
- */
-    
-    //Is anyone listening
-    if([delegate respondsToSelector:@selector(finishedImagePick)])
-    {
-        //send the delegate function with the amount entered by the user
-        [delegate finishedImagePick];
-    }
-    
-    [self dismissModalViewControllerAnimated:YES];
-
 }
 
 

@@ -35,7 +35,6 @@
 		1A3BF35016BC6D6200BE7284 /* ImagePickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A3BF34F16BC6D6200BE7284 /* ImagePickerViewController.m */; };
 		1AA2C3AC16C054A30060603D /* pattern.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AA2C3AB16C054A30060603D /* pattern.png */; };
 		1AA2C3AF16C056000060603D /* PositionMaskImage_VC.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA2C3AE16C056000060603D /* PositionMaskImage_VC.m */; };
-		1AA4A6CE16C2A791006CE948 /* BaseImageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1AA4A6CD16C2A791006CE948 /* BaseImageViewController.m */; };
 		FA05788E16BD85F9007B6576 /* mask.png in Resources */ = {isa = PBXBuildFile; fileRef = FA05788D16BD85F9007B6576 /* mask.png */; };
 		FA05789116BDA313007B6576 /* ImageFileWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = FA05789016BDA313007B6576 /* ImageFileWriter.m */; };
 /* End PBXBuildFile section */
@@ -79,8 +78,6 @@
 		1AA2C3AB16C054A30060603D /* pattern.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pattern.png; sourceTree = "<group>"; };
 		1AA2C3AD16C056000060603D /* PositionMaskImage_VC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PositionMaskImage_VC.h; sourceTree = "<group>"; };
 		1AA2C3AE16C056000060603D /* PositionMaskImage_VC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PositionMaskImage_VC.m; sourceTree = "<group>"; };
-		1AA4A6CC16C2A791006CE948 /* BaseImageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseImageViewController.h; sourceTree = "<group>"; };
-		1AA4A6CD16C2A791006CE948 /* BaseImageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseImageViewController.m; sourceTree = "<group>"; };
 		FA05788D16BD85F9007B6576 /* mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mask.png; sourceTree = "<group>"; };
 		FA05788F16BDA313007B6576 /* ImageFileWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageFileWriter.h; sourceTree = "<group>"; };
 		FA05789016BDA313007B6576 /* ImageFileWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageFileWriter.m; sourceTree = "<group>"; };
@@ -140,8 +137,6 @@
 				1A3BF31616B9C11D00BE7284 /* AppDelegate.h */,
 				1A3BF31716B9C11D00BE7284 /* AppDelegate.m */,
 				1A3BF31F16B9C11D00BE7284 /* MainStoryboard.storyboard */,
-				1AA4A6CC16C2A791006CE948 /* BaseImageViewController.h */,
-				1AA4A6CD16C2A791006CE948 /* BaseImageViewController.m */,
 				1A3BF34E16BC6D6200BE7284 /* ImagePickerViewController.h */,
 				1A3BF34F16BC6D6200BE7284 /* ImagePickerViewController.m */,
 				1A3BF32216B9C11D00BE7284 /* MaskViewController.h */,
@@ -277,7 +272,6 @@
 				1A3BF35016BC6D6200BE7284 /* ImagePickerViewController.m in Sources */,
 				FA05789116BDA313007B6576 /* ImageFileWriter.m in Sources */,
 				1AA2C3AF16C056000060603D /* PositionMaskImage_VC.m in Sources */,
-				1AA4A6CE16C2A791006CE948 /* BaseImageViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
