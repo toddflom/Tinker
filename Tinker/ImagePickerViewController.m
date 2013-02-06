@@ -106,13 +106,15 @@
 
 - (IBAction)cancel:(id)sender {
     imageView.image = nil;
+    [ImageFileWriter setIsFirstImgSet:NO];
     [self switchControls];
 }
 
-- (IBAction)UseImage:(id)sender {
 
-    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard"
-                                                             bundle: nil];
+
+- (IBAction)UseImage:(id)sender {
+    [ImageFileWriter setIsFirstImgSet:YES];
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"MainStoryboard" bundle: nil];
     
     UIViewController *controller = (UIViewController*)[mainStoryboard
                                                        instantiateViewControllerWithIdentifier: @"MaskView"];
@@ -131,8 +133,7 @@
     
     if (newMedia) {
         UIImageWriteToSavedPhotosAlbum(pickedImage, self,
-                                       @selector(image:finishedSavingWithError:contextInfo:),
-                                       nil);
+                       @selector(image:finishedSavingWithError:contextInfo:), nil);
     }
     
     pickedImage = [self scaleAndRotateImage:pickedImage];

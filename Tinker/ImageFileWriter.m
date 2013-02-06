@@ -30,24 +30,24 @@ static ImageFileWriter *sharedObject;
 
 
 #pragma mark Shared Public Methods
-+(BOOL) getSomeData {
++(BOOL) getIsFirstImgSet {
     ImageFileWriter *shared = [ImageFileWriter sharedInstance];
     return shared.isFirstImgSet;
 }
 
-+(void) setSomeData:(BOOL)isFirstImgSet {
++(void) setIsFirstImgSet:(BOOL)isFirstImgSet {
     ImageFileWriter *shared = [ImageFileWriter sharedInstance];
     shared.isFirstImgSet = isFirstImgSet;
 }
 
 
 
-+(NSString *) getSavedImage {
++(UIImage *) getSavedImage {
     ImageFileWriter *shared = [ImageFileWriter sharedInstance];
     return shared.savedImage;
 }
 
-+(void) setSavedImage:(NSString *)savedImage {
++(void) setSavedImage:(UIImage *)savedImage {
     ImageFileWriter *shared = [ImageFileWriter sharedInstance];
     shared.savedImage = savedImage;
 }

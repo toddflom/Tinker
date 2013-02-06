@@ -672,9 +672,9 @@ CGImageRef createMaskWithImage(CGImageRef image)  // gets the non-reversed aplha
  // CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
  //xxxxxx
  
- //*******This is the code I used to handle the tranparency!!!
+ // *******This is the code I used to handle the tranparency!!!
  CGBitmapInfo bitmapInfo = kCGImageAlphaPremultipliedLast;
- //*******
+ // *******
  
  CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
  

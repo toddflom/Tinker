@@ -26,6 +26,9 @@
 // Shared Public Methods:
 //   - Using static methods for opertations is a nice convenience
 //   - Each method should ensure it is using the above sharedInstance
++(BOOL) getIsFirstImgSet;
++(void) setIsFirstImgSet:(BOOL)isFirstImgSet;
+
 +(UIImage *) getSavedImage;
 +(void) setSavedImage:(UIImage *)savedImage;
 

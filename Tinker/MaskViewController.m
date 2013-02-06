@@ -197,7 +197,7 @@
     
     UIImage *inputImage = _imageView.image;
 	
-    
+// Isn't needed, maskRef is already built using  CGImageMaskCreate
 //    CGImageRef mask = CGImageMaskCreate(CGImageGetWidth(maskRef),
 //                                        CGImageGetHeight(maskRef),
 //                                        CGImageGetBitsPerComponent(maskRef),
